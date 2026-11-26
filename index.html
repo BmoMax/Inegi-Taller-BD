@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panel de gestión de establecimientos educativos." />
+    <title>Plantel Control</title>
+    <style>
+      :root {
+        --navy: #102a43;
+        --blue: #1261a6;
+        --sky: #eaf5ff;
+        --ink: #172b4d;
+        --muted: #62748a;
+        --line: #dfe7ef;
+        --canvas: #f5f8fb;
+        --white: #ffffff;
+        --green: #16866a;
+        --amber: #ad6a00;
+        --shadow: 0 12px 32px rgba(22, 51, 79, 0.09);
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--canvas); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 16px; }
+      button { font: inherit; cursor: pointer; }
+      .shell { min-height: 100vh; display: grid; grid-template-columns: 264px 1fr; }
+      .sidebar { background: var(--navy); color: #dce9f5; padding: 28px 16px; display: flex; flex-direction: column; gap: 30px; }
+      .brand { display: flex; align-items: center; gap: 12px; padding: 0 10px; color: white; font-weight: 760; letter-spacing: -.02em; font-size: 1.15rem; }
+      .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: #1b75bb; box-shadow: inset 0 0 0 1px #62b4ee; }
+      .brand-mark svg { width: 23px; height: 23px; fill: white; }
+      .nav-label { margin: 0 10px 8px; color: #94aec9; font-size: .75rem; text-transform: uppercase; font-weight: 720; letter-spacing: .1em; }
+      .nav { display: grid; gap: 5px; }
+      .nav button { background: transparent; border: 0; color: inherit; display: flex; align-items: center; gap: 12px; text-align: left; border-radius: 9px; padding: 11px 12px; }
+      .nav button:hover, .nav button.active { background: #1c4367; color: white; }
+      .nav-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+      .support { margin-top: auto; border-top: 1px solid #315778; padding: 20px 10px 0; color: #a9c0d6; font-size: .86rem; line-height: 1.45; }
+      .support strong { display: block; color: white; margin-bottom: 4px; }
+      main { min-width: 0; }
+      .topbar { height: 78px; background: var(--white); border-bottom: 1px solid var(--line); padding: 0 clamp(24px, 4vw, 54px); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+      .crumb { color: var(--muted); font-size: .9rem; }.crumb b { color: var(--ink); }
+      .profile { display: flex; align-items: center; gap: 10px; }.profile-text { text-align: right; font-size: .85rem; line-height: 1.2; }.profile-text span { display: block; color: var(--muted); font-size: .76rem; margin-top: 3px; }.avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #d7eafd; color: #0d5796; font-weight: 760; }
+      .content { max-width: 1460px; margin: 0 auto; padding: 38px clamp(24px, 4vw, 54px) 54px; }
+      .welcome { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+      h1 { font-size: clamp(1.7rem, 3vw, 2.25rem); letter-spacing: -.045em; margin: 0 0 8px; }.welcome p { margin: 0; color: var(--muted); line-height: 1.5; }
+      .primary { border: 0; border-radius: 9px; padding: 12px 16px; background: var(--blue); color: white; box-shadow: 0 5px 14px rgba(18, 97, 166, .22); font-weight: 680; white-space: nowrap; }.primary:hover { background: #0b4f8d; }
+      .overview { display: grid; grid-template-columns: 1.55fr .9fr; gap: 22px; }
+      .hero { position: relative; overflow: hidden; min-height: 232px; padding: 30px; border-radius: 16px; color: white; background: linear-gradient(121deg, #0d3d67, #1071b7); box-shadow: var(--shadow); }.hero:after { content: ""; position: absolute; height: 260px; width: 260px; right: -65px; top: -105px; border: 40px solid rgba(255,255,255,.11); border-radius: 50%; }.eyebrow { font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 750; color: #bde2fd; }.hero h2 { position: relative; max-width: 500px; margin: 10px 0 10px; font-size: clamp(1.45rem, 2.3vw, 2rem); letter-spacing: -.035em; line-height: 1.13; }.hero p { position: relative; max-width: 520px; margin: 0; color: #d8ebf9; line-height: 1.5; }.hero-stats { position: relative; display: flex; gap: 30px; margin-top: 26px; }.hero-stats span { display: block; font-size: 1.38rem; font-weight: 760; }.hero-stats small { color: #c1e2f8; font-size: .78rem; }
+      .notice { border: 1px solid #cfe0f0; background: #f9fcff; border-radius: 16px; padding: 24px; }.notice h2 { font-size: 1rem; margin: 0 0 11px; }.notice p { color: var(--muted); font-size: .9rem; line-height: 1.55; margin: 0 0 18px; }.status { display: flex; align-items: center; gap: 8px; color: var(--green); font-size: .86rem; font-weight: 650; }.dot { width: 9px; height: 9px; background: #2eb289; border-radius: 50%; box-shadow: 0 0 0 4px #d9f5eb; }
+      .section-head { display: flex; align-items: end; justify-content: space-between; margin: 38px 0 16px; }.section-head h2 { font-size: 1.14rem; margin: 0; letter-spacing: -.02em; }.section-head span { color: var(--muted); font-size: .86rem; }
+      .modules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }.module { min-height: 192px; padding: 21px; border: 1px solid var(--line); border-radius: 13px; background: white; text-align: left; transition: .18s ease; }.module:hover { transform: translateY(-3px); border-color: #9fc9ed; box-shadow: var(--shadow); }.module-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 11px; background: var(--sky); color: var(--blue); margin-bottom: 18px; }.module-icon svg { width: 24px; height: 24px; fill: currentColor; }.module h3 { font-size: 1rem; margin: 0 0 7px; color: var(--ink); }.module p { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.45; }.module small { display: block; color: var(--blue); font-size: .78rem; margin-top: 16px; font-weight: 700; }
+      .bottom-grid { display: grid; grid-template-columns: 1.35fr .85fr; gap: 22px; }.panel { border: 1px solid var(--line); border-radius: 13px; background: white; overflow: hidden; }.panel-title { display: flex; justify-content: space-between; align-items: center; padding: 20px 21px 15px; }.panel-title h2 { margin: 0; font-size: 1rem; }.link { background: transparent; color: var(--blue); border: 0; font-weight: 650; font-size: .84rem; }.activity { list-style: none; margin: 0; padding: 0 21px 8px; }.activity li { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid #edf1f5; font-size: .88rem; }.activity-mark { width: 33px; height: 33px; border-radius: 50%; display: grid; place-items: center; background: #edf7f3; color: var(--green); font-weight: 760; }.activity small { color: var(--muted); margin-left: auto; white-space: nowrap; }.quick { padding: 0 21px 21px; display: grid; gap: 10px; }.quick button { border: 1px solid var(--line); background: white; border-radius: 9px; padding: 13px; color: var(--ink); font-weight: 630; text-align: left; }.quick button:hover { border-color: #82bde9; background: #f8fcff; }
+      .toast { position: fixed; right: 22px; bottom: 22px; max-width: 340px; border-radius: 10px; background: #123456; color: white; padding: 14px 16px; box-shadow: var(--shadow); transform: translateY(100px); opacity: 0; transition: .25s ease; }.toast.show { transform: translateY(0); opacity: 1; }
+      @media (max-width: 1060px) { .modules { grid-template-columns: repeat(2, 1fr); }.overview, .bottom-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 720px) { .shell { grid-template-columns: 1fr; }.sidebar { padding: 13px 18px; flex-direction: row; align-items: center; overflow-x: auto; gap: 18px; }.brand { padding: 0; white-space: nowrap; }.sidebar .nav-label, .sidebar .support { display: none; }.nav { display: flex; gap: 4px; }.nav button { white-space: nowrap; padding: 9px; }.nav button span:last-child { display: none; }.topbar { height: 65px; }.profile-text { display: none; }.welcome { align-items: start; flex-direction: column; }.content { padding-top: 28px; }.modules { grid-template-columns: 1fr; }.hero-stats { gap: 20px; } }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><div class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 8v5l6 3 6-3v-5l-6 3-6-3Z"/></svg></div>Plantel Control</div>
+        <div>
+          <p class="nav-label">Principal</p>
+          <nav class="nav" aria-label="Navegación principal">
+            <button class="active" data-page="Inicio"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z"/></svg><span>Inicio</span></button>
+            <button data-page="Geografía y territorialidad"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a8 8 0 0 0-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><span>Geografía</span></button>
+            <button data-page="Infraestructura urbana"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 21h18v-2H3v2Zm2-4h3v-5H5v5Zm5 0h4V7h-4v10Zm6 0h3V3h-3v14Z"/></svg><span>Infraestructura</span></button>
+            <button data-page="Oferta educativa"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4Zm3 14h11V7a1 1 0 0 0-1-1H7v12Z"/></svg><span>Oferta educativa</span></button>
+            <button data-page="Establecimientos y direcciones"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 21h18v-2H3v2Zm2-4h4v-5H5v5Zm6 0h4V4h-4v13Zm6 0h3v-8h-3v8Z"/></svg><span>Establecimientos</span></button>
+          </nav>
+        </div>
+        <div class="support"><strong>Proyecto escolar</strong>Prototipo inicial. Conecta MySQL para consultar datos reales.</div>
+      </aside>
+      <main>
+        <header class="topbar"><div class="crumb">Panel / <b id="current-page">Inicio</b></div><div class="profile"><div class="profile-text"><b>Administrador</b><span>Acceso de demostración</span></div><div class="avatar">AD</div></div></header>
+        <div class="content">
+          <section class="welcome"><div><h1>Buenos días, Administrador</h1><p>Centraliza y consulta la información de los establecimientos educativos.</p></div><button class="primary" data-action="nuevo">+ Registrar establecimiento</button></section>
+          <section class="overview"><article class="hero"><div class="eyebrow">Resumen del sistema</div><h2>La información escolar, conectada en un solo lugar.</h2><p>Gestiona ubicación, infraestructura y datos de cada plantel desde una interfaz clara.</p><div class="hero-stats"><div><span>4</span><small>Módulos de gestión</small></div><div><span>CRUD</span><small>Operaciones disponibles</small></div><div><span>MySQL</span><small>Base de datos</small></div></div></article><aside class="notice"><h2>Estado de la conexión</h2><p>Esta es una vista de diseño. Al conectar MySQL, los indicadores y registros se cargarán automáticamente.</p><div class="status"><span class="dot"></span>Modo prototipo activo</div></aside></section>
+          <div class="section-head"><h2>Módulos del sistema</h2><span>Selecciona un módulo para comenzar</span></div>
+          <section class="modules">
+            <button class="module" data-page="Geografía y territorialidad"><div class="module-icon"><svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg></div><h3>Geografía y territorialidad</h3><p>Estados, municipios y localidades.</p><small>Consultar catálogos</small></button>
+            <button class="module" data-page="Infraestructura urbana"><div class="module-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2Zm2-4h3v-5H5v5Zm5 0h4V7h-4v10Zm6 0h3V3h-3v14Z"/></svg></div><h3>Infraestructura urbana</h3><p>Vialidades y asentamientos.</p><small>Gestionar infraestructura</small></button>
+            <button class="module" data-page="Oferta educativa"><div class="module-icon"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4Zm3 14h11V7a1 1 0 0 0-1-1H7v12Z"/></svg></div><h3>Oferta educativa</h3><p>Niveles y clasificaciones.</p><small>Administrar oferta</small></button>
+            <button class="module" data-page="Establecimientos y direcciones"><div class="module-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2Zm2-4h4v-5H5v5Zm6 0h4V4h-4v13Zm6 0h3v-8h-3v8Z"/></svg></div><h3>Establecimientos</h3><p>Instituciones, dirección y datos de contacto.</p><small>Ver registros</small></button>
+          </section>
+          <div class="section-head"><h2>Actividad reciente</h2><span>Datos de ejemplo</span></div>
+          <section class="bottom-grid"><article class="panel"><div class="panel-title"><h2>Últimos movimientos</h2><button class="link" data-action="ver">Ver todos</button></div><ul class="activity"><li><div class="activity-mark">+</div><div><b>Nuevo establecimiento registrado</b><br><span style="color:#62748a">Pendiente de conexión con MySQL</span></div><small>Hoy</small></li><li><div class="activity-mark">✓</div><div><b>Catálogo territorial actualizado</b><br><span style="color:#62748a">Estados, municipios y localidades</span></div><small>Hoy</small></li><li><div class="activity-mark">i</div><div><b>Vista de direcciones preparada</b><br><span style="color:#62748a">Lista para consultas con JOIN</span></div><small>Ayer</small></li></ul></article><article class="panel"><div class="panel-title"><h2>Acciones rápidas</h2></div><div class="quick"><button data-action="nuevo">Registrar institución</button><button data-page="Geografía y territorialidad">Buscar localidad</button><button data-page="Oferta educativa">Administrar niveles educativos</button></div></article></section>
+        </div>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite" id="toast"></div>
+    <script>
+      const page = document.getElementById('current-page'); const toast = document.getElementById('toast'); let timer;
+      function showToast(message) { toast.textContent = message; toast.classList.add('show'); clearTimeout(timer); timer = setTimeout(() => toast.classList.remove('show'), 3300); }
+      document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => { const name = button.dataset.page; page.textContent = name; document.querySelectorAll('.nav button').forEach(item => item.classList.toggle('active', item.dataset.page === name)); showToast(`Módulo “${name}” seleccionado. La pantalla CRUD se conectará en la siguiente etapa.`); }));
+      document.querySelectorAll('[data-action="nuevo"]').forEach(button => button.addEventListener('click', () => showToast('Aquí añadiremos el formulario de registro con validación de llaves foráneas.')));
+      document.querySelector('[data-action="ver"]').addEventListener('click', () => showToast('Aquí aparecerá el historial real al conectar la base de datos.'));
+    </script>
+  </body>
+</html>
